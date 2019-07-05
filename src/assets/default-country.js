@@ -1,21 +1,16 @@
-const get = require('simple-get')
+const axios = require('axios')
 
-const getCountry = function () {
-  return new Promise((resolve, reject) => {
-    get.concat('https://ip2c.org/s', (error, response, data) => {
-      // Response: 1;CD;COD;COUNTRY
-      if (error) {
-        return reject(error);
-      }
-      const result = (data || '').toString();
-
-      if (!result || result[0] !== '1') {
-        return reject(new Error('unable to fetch the country'));
-      }
-
-      return resolve(result.substr(2, 2));
-    });
-  });
-};
+const getCountry = () => {
+  return axios.get('https://ip2c.org/s').then(({data}) => {
+    // Response: 1;CD;COD;COUNTRY
+    const result = (data || '').toString()
+  
+    if (!result || result[0] !== '1') {
+      throw new Error('unable to fetch the country')
+    }
+  
+    return result.substr(2, 2)
+  })
+}
 
 export default getCountry;
